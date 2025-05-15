@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Prompt Sidebar",
+  "version": "0.7.1",
+  "description": "一个专注于提示词（Prompt）管理与快速输入的浏览器扩展",
+  "icons": {
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Prompt Sidebar",
+    "default_icon": {
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "permissions": [
+    "storage",
+    "sidePanel",
+    "contextMenus",
+    "activeTab",
+    "clipboardWrite",
+    "scripting",
+    "notifications"
+  ],
+  "host_permissions": [
+    "https://api.siliconflow.cn/*",
+    "https://api.openai.com/*",
+    "https://openrouter.ai/*"
+  ]
+}

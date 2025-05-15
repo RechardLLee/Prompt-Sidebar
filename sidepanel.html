@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prompt Sidebar</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Prompt Sidebar</h1>
+      <div class="header-actions">
+        <button id="addBtn" class="btn primary">添加提示词</button>
+        <button id="createFolderBtn" class="btn">创建文件夹</button>
+        <button id="optimizeBtn" class="btn">优化提示词</button>
+        <button id="analyticsBtn" class="btn">统计分析</button>
+        <button id="importBtn" class="btn">导入</button>
+        <button id="exportBtn" class="btn">导出</button>
+        <button id="settingsBtn" class="btn">设置</button>
+        <button id="deleteSelectedBtn" class="btn small danger" disabled style="display: none;">删除选中</button>
+      </div>
+    </header>
+    
+    <div class="folder-management-area" id="folderManagementArea">
+      <div id="allPromptsFixedContainer"></div>
+      <div id="foldersList" class="folders-list">
+        <!-- 文件夹将在此处动态生成 -->
+      </div>
+    </div>
+
+    <div class="batch-actions-container" style="display: none; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color);">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <!-- <input type="checkbox" id="selectAllCheckbox" title="全选/取消全选"> -->
+        <!-- <label for="selectAllCheckbox" style="cursor: pointer;">全选</label> -->
+      </div>
+    </div>
+
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="搜索提示词...">
+      <input type="text" id="tagFilterInput" placeholder="按标签过滤...">
+      <select id="sortOrderSelect">
+        <option value="default">默认排序</option>
+        <option value="createdAt_desc">按创建日期 (新->旧)</option>
+        <option value="createdAt_asc">按创建日期 (旧->新)</option>
+        <option value="title_asc">按标题 (A->Z)</option>
+        <option value="title_desc">按标题 (Z->A)</option>
+        <option value="usageCount_desc">按使用次数 (高->低)</option>
+        <option value="usageCount_asc">按使用次数 (低->高)</option>
+        <!-- 更多排序选项可以后续添加 -->
+      </select>
+      <!-- Remove the select element below -->
+      <!-- <select id="tagFilter">
+        <option value="">所有标签</option>
+      </select> -->
+    </div>
+    
+    <div id="promptsList" class="prompts-list">
+      <!-- 提示词列表将通过 JavaScript 动态生成 -->
+    </div>
+
+    <div id="loadMoreContainer" style="text-align: center; padding: 15px; display: none;">
+      <button id="loadMoreBtn" class="btn">加载更多</button>
+    </div>
+  </div>
+  
+  <!-- 用户设置模态框 -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>用户设置</h2>
+
+      <div class="form-group">
+        <label>变量格式</label>
+        <div class="input-group">
+          <input type="text" id="variableStartFormat" placeholder="开始标记" style="width: 80px;">
+          <span style="margin: 0 8px;">变量名</span>
+          <input type="text" id="variableEndFormat" placeholder="结束标记" style="width: 80px;">
+        </div>
+        <div class="help-text">示例：如设置为 {{ 和 }}，则变量写法为 {{变量名}}</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="triggerCommand">触发命令</label>
+        <input type="text" id="triggerCommand" placeholder="输入触发命令">
+        <div class="help-text">示例：\p 或 /p，输入此命令将显示提示词选择器</div>
+      </div>
+
+      <div class="form-group">
+        <label for="openrouterApiKey">OpenRouter API Key</label>
+        <input type="password" id="openrouterApiKey" placeholder="输入 OpenRouter API Key">
+      </div>
+
+      <div class="form-group">
+        <label for="openrouterModel">OpenRouter 模型名称</label>
+        <input type="text" id="openrouterModel" placeholder="例如：qwen/qwen3-4b:free">
+        <div class="help-text">请参考 OpenRouter 文档获取可用模型</div>
+      </div>
+
+      <div class="form-group">
+        <label for="temperatureSetting">Temperature (0.0 - 2.0)</label>
+        <input type="number" id="temperatureSetting" placeholder="例如: 0.7" step="0.1" min="0" max="2">
+        <div class="help-text">控制输出的随机性，值越高越随机。建议 0.7</div>
+      </div>
+
+      <div class="form-group">
+        <label for="topPSetting">Top P (0.0 - 1.0)</label>
+        <input type="number" id="topPSetting" placeholder="例如: 0.7" step="0.1" min="0" max="1">
+        <div class="help-text">控制核心词汇的概率，值越低越集中于高概率词。建议 0.7</div>
+      </div>
+      
+      <div class="form-actions">
+        <button id="testOpenRouterBtn" class="btn">测试 OpenRouter</button>
+        <button id="saveSettingsBtn" class="btn primary">保存设置</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 新建/编辑提示词的模态框 -->
+  <div id="promptModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modalTitle">新建提示词</h2>
+      <form id="promptForm">
+        <div class="form-group">
+          <label for="promptTitle">标题</label>
+          <input type="text" id="promptTitle" required>
+        </div>
+        <div class="form-group">
+          <label for="promptContent">内容</label>
+          <textarea id="promptContent" rows="8" required></textarea>
+          <div class="help-text" id="variableFormatHelp">使用 {{变量名}} 创建可替换的变量</div>
+        </div>
+        <div class="form-group">
+          <label for="promptTags">标签 (逗号分隔)</label>
+          <input type="text" id="promptTags">
+        </div>
+        <div class="form-group">
+          <label for="promptFolderSelect">文件夹</label>
+          <select id="promptFolderSelect">
+            <option value="">未分类</option>
+            <!-- 文件夹选项将在此处动态生成 -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="promptLink">链接 URL</label>
+          <input type="text" id="promptLink" placeholder="https://example.com">
+        </div>
+        <div class="form-group" id="imageUploadArea">
+          <label for="promptImage">图片预览 (可拖拽图片到此区域)</label>
+          <input type="file" id="promptImage" accept="image/*" style="display: block; margin-bottom: 10px;">
+          <img id="modalImagePreview" src="#" alt="图片预览" style="max-width: 100%; max-height: 150px; margin-top: 10px; display: none; border: 1px solid var(--border-color); border-radius: 4px;">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn primary">保存</button>
+          <button type="button" class="btn" id="cancelBtn">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- 导入/导出模态框 -->
+  <div id="importExportModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="importExportTitle">导入提示词</h2>
+      <div id="importExportContent">
+        <textarea id="importExportData" rows="10"></textarea>
+      </div>
+      <div class="form-actions">
+        <button id="confirmImportExportBtn" class="btn primary">确认</button>
+        <button id="cancelImportExportBtn" class="btn">取消</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="sidepanel.js"></script>
+</body>
+</html>
+<!-- 移除导入导出模态框，因为现在直接使用文件 -->

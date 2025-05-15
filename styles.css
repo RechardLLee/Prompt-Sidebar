@@ -1,0 +1,1556 @@
+/* CSS变量 - 主题色 */
+:root {
+  /* 浅色模式 */
+  --bg-primary: rgba(250, 250, 250, 0.85);
+  --bg-secondary: rgba(255, 255, 255, 0.8);
+  --bg-tertiary: rgba(240, 240, 240, 0.9);
+  --text-primary: #333;
+  --text-secondary: #666;
+  --text-muted: #888;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --accent-color: #3a7bec;
+  --accent-hover: #2561c9;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --backdrop-blur: 10px;
+  --scrollbar-thumb: rgba(0, 0, 0, 0.2);
+  --scrollbar-track: rgba(0, 0, 0, 0.05);
+  --scrollbar-width: 6px;
+  --modal-backdrop: rgba(0, 0, 0, 0.25);
+}
+
+/* 深色模式 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: rgba(32, 32, 36, 0.85);
+    --bg-secondary: rgba(40, 40, 45, 0.8);
+    --bg-tertiary: rgba(50, 50, 55, 0.9);
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #808080;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --accent-color: #4e85f0;
+    --accent-hover: #6899f8;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --backdrop-blur: 10px;
+    --scrollbar-thumb: rgba(255, 255, 255, 0.3);
+    --scrollbar-track: rgba(255, 255, 255, 0.05);
+    --modal-backdrop: rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* 全局样式 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s, color 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  width: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 自定义滚动条样式 */
+::-webkit-scrollbar {
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-color);
+}
+
+.container {
+  padding: 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+}
+
+/* 头部样式 */
+header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* 新增：文件夹管理区域 */
+.folder-management-area {
+  margin-bottom: 20px; /* 与下方搜索区域的间距 */
+  padding-bottom: 15px; /* 底部留白 */
+  border-bottom: 1px solid var(--border-color); /* 分隔线 */
+  display: flex; /* Enable flex layout */
+  align-items: flex-start; /* Align items to the start of the cross axis (top) */
+}
+
+#allPromptsFixedContainer {
+  /* Styles for the fixed "All Prompts" button container */
+  margin-right: 10px; /* Space between fixed button and scrollable list */
+  flex-shrink: 0; /* Prevent this container from shrinking */
+}
+
+/* Remove sticky positioning from .all-prompts-item as it's now in a fixed container */
+.folder-item-wrapper.all-prompts-item {
+  /* position: sticky; */ /* No longer needed */
+  /* left: 0; */ /* No longer needed */
+  /* z-index: 10; */ /* No longer needed */
+  /* background-color: var(--bg-primary); */ /* May or may not be needed, depending on desired look */
+  /* box-shadow: 2px 0 5px -2px rgba(0,0,0,0.1); */ /* May or may not be needed */
+  /* Keep other specific styles for all-prompts-item if any, like distinct background or border if desired */
+}
+
+.folders-list {
+  display: flex; /* 水平排列文件夹 */
+  gap: 10px; /* Increased gap from 8px */
+  overflow-x: auto; /* 水平滚动 */
+  padding-bottom: 10px; /* 为滚动条留出空间，并增加美观性 */
+  flex-grow: 1; /* Allow the list to take up remaining space */
+  min-width: 0; /* Important for flex-grow with overflow */
+  /* 为了更好的滚动条体验，可以在 webkit 浏览器中隐藏默认滚动条，然后用伪元素自定义 */
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Specific style for "All Prompts" item to make it sticky */
+.folder-item-wrapper.all-prompts-item {
+  /* position: sticky; */ /* No longer needed */
+  /* left: 0; */ /* No longer needed */
+  /* z-index: 10; */ /* No longer needed */
+  /* background-color: var(--bg-primary); */ /* May or may not be needed, depending on desired look */
+  /* box-shadow: 2px 0 5px -2px rgba(0,0,0,0.1); */ /* May or may not be needed */
+  /* Keep other specific styles for all-prompts-item if any, like distinct background or border if desired */
+}
+
+/* 修改：文件夹项包裹器 */
+.folder-item-wrapper {
+  display: flex; /* 使文件夹名称和按钮在同一行 */
+  align-items: center; /* 垂直居中对齐 */
+  justify-content: space-between; /* 名称在左，按钮在右 */
+  padding: 6px 12px; /* Increased horizontal padding from 6px 8px */
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background-color: var(--bg-tertiary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative; /* 为绝对定位的按钮（如果需要） */
+  flex-shrink: 0; /* Prevent shrinking when names are long */
+  line-height: 1.5; /* 确保文字垂直居中 */
+}
+
+.folder-item {
+  /* padding: 6px 12px; */ /* 从 wrapper 继承或调整 */
+  /* border: 1px solid var(--border-color); */ /* 边框移到 wrapper */
+  /* border-radius: 16px; */ /* 圆角移到 wrapper */
+  /* background-color: var(--bg-tertiary); */ /* 背景移到 wrapper */
+  color: var(--text-secondary);
+  /* cursor: pointer; */ /* 点击事件现在主要在 wrapper 上，但 item 本身也可以保留 */
+  font-size: 13px;
+  white-space: nowrap; /* 防止文本换行 */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Show ellipsis for long text */
+  flex-grow: 1; /* 让文件夹名称部分占据多余空间 */
+  min-width: 0; /* Important for flex-shrink to work correctly with ellipsis */
+  /* transition: all 0.2s ease; */
+  display: flex; /* 新增：使内部元素（名称和计数）可以使用flex对齐 */
+  align-items: center; /* 新增：垂直居中对齐名称和计数 */
+}
+
+/* 修改：悬停和选中状态应用到 wrapper */
+.folder-item-wrapper:hover {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+.folder-item-wrapper:hover .folder-item,
+.folder-item-wrapper:hover .folder-item-count {
+  color: white; /* 悬停时内部文字变白 */
+}
+.folder-item-wrapper:hover .folder-item-count {
+  background-color: white; /* 悬停时徽章颜色反转 */
+  color: var(--accent-color);
+}
+
+.folder-item-wrapper.selected {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  font-weight: 500; /* 这个可能不需要，因为颜色已经区分 */
+}
+.folder-item-wrapper.selected .folder-item,
+.folder-item-wrapper.selected .folder-item-count {
+  color: white;
+}
+.folder-item-wrapper.selected .folder-item-count {
+  background-color: white;
+  color: var(--accent-color);
+}
+
+/* 新增：文件夹操作按钮容器 */
+.folder-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px; /* 按钮间距缩小 */
+  margin-left: 8px; /* 与文件夹名称的间距 */
+  opacity: 0; /* 默认隐藏 */
+  transition: opacity 0.2s ease-in-out;
+}
+
+.folder-item-wrapper:hover .folder-item-actions {
+  opacity: 1; /* 悬停时显示按钮 */
+}
+
+/* 新增：文件夹操作按钮样式 */
+.folder-action-btn {
+  background-color: transparent; /* 透明背景 */
+  border: none;
+  color: var(--text-secondary); /* 默认颜色 */
+  padding: 4px; /* 调整内边距使图标按钮更紧凑 */
+  border-radius: 50%; /* 圆形按钮 */
+  line-height: 1; /* 确保图标垂直居中 */
+  font-size: 14px; /* 图标大小 */
+  width: 24px; /* 固定宽度 */
+  height: 24px; /* 固定高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.folder-item-wrapper:hover .folder-action-btn {
+  color: white; /* 悬停在wrapper上时，按钮图标变白 */
+  background-color: rgba(255, 255, 255, 0.2); /* 轻微背景使其可见 */
+}
+
+.folder-action-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3) !important; /* 单独悬停按钮时更亮 */
+}
+
+.folder-action-btn.danger:hover {
+  color: white !important; /* 确保危险按钮在悬停时文字也是白色 */
+  background-color: var(--error-color, #f44336) !important; /* 悬停危险按钮时显示警告色 */
+}
+
+/* 新增：文件夹内提示词数量样式 */
+.folder-item-count {
+  background-color: var(--accent-color);
+  color: white;
+  padding: 1px 6px;
+  border-radius: 8px; /* 更圆润的徽章 */
+  font-size: 10px;
+  font-weight: 500;
+  margin-left: 6px;
+  display: inline-block; /* 确保padding和圆角正确显示 */
+  vertical-align: middle; /* 与文件夹名称垂直居中 */
+}
+
+.folder-item.selected .folder-item-count {
+  background-color: white; /* 选中时，徽章背景变为白色 */
+  color: var(--accent-color); /* 选中时，徽章文字变为主题色 */
+}
+
+/* 修正：确保选中状态的徽章颜色在 .folder-item-wrapper.selected 下也正确 */
+.folder-item-wrapper.selected .folder-item-count {
+  background-color: white;
+  color: var(--accent-color);
+}
+
+/* 按钮样式 */
+.btn {
+  padding: 8px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.btn:hover {
+  background-color: var(--bg-tertiary);
+  box-shadow: 0 4px 8px var(--shadow-color);
+  transform: translateY(-1px);
+}
+
+.btn.primary {
+  background-color: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+.btn.primary:hover {
+  background-color: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.btn.small {
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+/* 搜索和过滤 */
+.search-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.search-container input,
+.search-container select {
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  box-shadow: 0 2px 5px var(--shadow-color);
+}
+
+.search-container input:focus,
+.search-container select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(74, 133, 240, 0.25);
+}
+
+.search-container input {
+  flex-grow: 1;
+  min-width: 130px;
+}
+
+/* 新增：批量操作容器样式 */
+.batch-actions-container {
+  display: flex; /* 使用 flex 布局 */
+  justify-content: flex-start; /* 左对齐 */
+  align-items: center;
+  padding: 8px 0; /* 上下留白，左右通过父容器的padding控制 */
+  /* border-bottom: 1px solid var(--border-color); */ /* 已经在html的style里了 */
+  /* margin-bottom: 10px; */ /* 已经在html的style里了 */
+}
+
+.batch-actions-container label {
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-left: 4px; /* 复选框和文字之间的间距 */
+}
+
+/* MODIFIED: Make .btn.danger styles more general */
+.btn.danger {
+  background-color: var(--error-color, #f44336);
+  color: white;
+  border-color: var(--error-color, #f44336);
+}
+
+.btn.danger:hover {
+  background-color: var(--error-hover-color, #d32f2f);
+  border-color: var(--error-hover-color, #d32f2f);
+}
+
+.btn.danger:disabled {
+  background-color: var(--text-muted);
+  border-color: var(--text-muted);
+  color: white; /* Ensure text is still white or light on muted background */
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* 优化主操作按钮容器 */
+.main-optimize-action {
+  margin-top: 16px; /* 与原始提示词区域的间距 */
+  margin-bottom: 20px; /* 与结果区域的间距 */
+  display: flex;
+  justify-content: center; /* 按钮居中 */
+}
+
+.main-optimize-action .btn.large {
+  padding: 12px 24px; /* 更大的按钮 */
+  font-size: 16px;
+  min-width: 200px; /* 按钮最小宽度 */
+}
+
+/* 优化结果区域 */
+.result-container {
+  margin-bottom: 24px; /* 与下方模板管理区域的间距 */
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+/* 优化结果后的操作按钮容器 */
+.result-actions-container {
+  display: flex;
+  justify-content: space-around; /* 按钮均匀分布 */
+  align-items: center;
+  gap: 12px; /* 按钮之间的间距 */
+  margin-top: 16px; /* 与结果输出区域的间距 */
+  padding-top: 16px;
+  border-top: 1px solid var(--border-color); /* 在按钮组上方添加分隔线 */
+}
+
+.result-actions-container .btn {
+  flex-grow: 1; /* 让按钮平均分配空间 */
+  max-width: 180px; /* 限制按钮最大宽度，避免过宽 */
+  display: flex; /* 用于图标和文字对齐 */
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* 图标和文字之间的间距 */
+}
+
+.result-actions-container .btn svg {
+  flex-shrink: 0; /* 防止图标被压缩 */
+}
+
+/* 图标按钮基础样式 (如果其他地方也用，可以考虑更通用) */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px; /* 图标和文字间距 */
+}
+
+.icon-btn svg {
+  width: 1em; /* 图标大小与文字大小关联 */
+  height: 1em;
+  flex-shrink: 0;
+}
+
+/* 提示词列表 */
+.prompts-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px; /* Increased from 12px */
+  padding-right: 6px;
+  margin-right: -6px;
+  color: var(--text-primary);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Layout classes for promptsList */
+.prompts-list.two-columns {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px; /* Increased from 10px */
+}
+
+.prompts-list.compact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Example: min 150px width cards */
+  gap: 12px; /* Increased from 8px */
+}
+
+/* Ensure prompt items in grid layouts behave correctly */
+.prompts-list.two-columns .prompt-item,
+.prompts-list.compact-grid .prompt-item {
+  /* Override or adjust properties if needed for grid items,
+     e.g., if default width/flex properties conflict */
+  margin-bottom: 0; /* Grid handles gap, so no need for margin-bottom on items */
+}
+
+.prompt-item {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 15px; /* Increased from 10px */
+  box-shadow: 0 2px 8px var(--shadow-color);
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex; /* Added for flex-direction */
+  flex-direction: column; /* Ensure children stack vertically */
+}
+
+.prompt-item:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.prompt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px; /* Increased from 8px */
+}
+
+.prompt-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.prompt-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* 新增：提示词标签容器样式 */
+.prompt-tags-container {
+  margin-top: 8px; /* Increased from 6px */
+  margin-bottom: 10px; /* Increased from 8px */
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* 新增：单个标签样式 */
+.prompt-tag {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  border: 1px solid var(--border-color);
+}
+
+.prompt-content {
+  margin-bottom: 10px; /* Increased from 8px */
+  white-space: pre-wrap;
+  word-break: break-word;
+  padding: 10px; /* Increased from 8px */
+  background-color: var(--bg-tertiary);
+  border-radius: 6px;
+  font-family: 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  border: 1px solid var(--border-color);
+  flex-grow: 1; /* Allow content to take available space */
+  flex-shrink: 1; /* Allow content to shrink */
+  overflow-y: auto; /* Enable vertical scrolling for content */
+  min-height: 60px; /* Ensure a minimum visible height (e.g., ~3-4 lines) */
+  max-height: 200px; /* Define max height for the content scroll area */
+}
+
+/* 新增：提示词使用次数显示样式 */
+.prompt-usage-count {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-top: 8px; /* Increased from 6px */
+  margin-bottom: 10px; /* Increased from 8px */
+  text-align: right;
+}
+
+.prompt-footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-top: 10px; /* Increased from 6px */
+}
+
+.prompt-footer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.variable {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+.no-prompts {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-muted);
+  font-size: 15px;
+}
+
+/* 模态框样式 */
+.modal {
+  display: none; /* 默认隐藏 */
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--modal-backdrop);
+  overflow: auto;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background-color: var(--bg-secondary);
+  margin: 8% auto;
+  padding: 24px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 540px;
+  box-shadow: 0 10px 30px var(--shadow-color);
+  position: relative;
+  animation: slideUp 0.3s ease-out;
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  border: 1px solid var(--border-color);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  font-weight: normal;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.2s;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close:hover {
+  color: var(--accent-color);
+  background-color: var(--bg-tertiary);
+}
+
+/* 表单样式 */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(74, 133, 240, 0.25);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+  font-family: 'Cascadia Code', 'Fira Code', monospace;
+  line-height: 1.5;
+}
+
+.help-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* 导入导出模态框 */
+#importExportData {
+  width: 100%;
+  height: 200px;
+  font-family: 'Cascadia Code', 'Fira Code', monospace;
+  resize: vertical;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+#importExportData:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(74, 133, 240, 0.25);
+}
+
+/* 手动复制区域样式 */
+.manual-copy-area {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: var(--bg-tertiary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.manual-copy-area textarea {
+  width: 100%;
+  height: 120px;
+  margin-bottom: 12px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-family: 'Cascadia Code', 'Fira Code', monospace;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* 文件导入导出按钮样式 */
+.file-input {
+  display: none;
+}
+
+/* 提示词选择器弹窗样式 */
+.prompt-selector-popup {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px var(--shadow-color);
+  max-height: 400px;
+  overflow: hidden;
+  z-index: 10000;
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+  animation: fadeInScale 0.2s ease-out;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.prompt-search-container {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.prompt-search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.prompt-search-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(74, 133, 240, 0.25);
+}
+
+.prompt-selector-list {
+  max-height: 340px;
+  overflow-y: auto;
+  padding: 8px;
+}
+
+.prompt-selector-item {
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.prompt-selector-item:hover {
+  background-color: var(--bg-tertiary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px var(--shadow-color);
+  border-color: var(--border-color);
+}
+
+.prompt-selector-item:last-child {
+  margin-bottom: 0;
+}
+
+.prompt-selector-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+}
+
+.prompt-selector-preview {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 新增: 提示词项中的图片预览样式 */
+.prompt-item-image-preview-container {
+  margin-top: 15px; /* 与上方 promptFooter 的间距 */
+  /* margin-bottom is removed as it's the last element or handled by card padding */
+  text-align: center; /* 图片居中 */
+  /* display: block; is implicitly fine, or managed by JS if not present */
+  display: none; /* Hide by default */
+}
+
+.prompt-item:hover .prompt-item-image-preview-container {
+  display: block; /* Show on hover of the parent prompt-item */
+}
+
+.prompt-item-image-preview {
+  max-width: 100%; /* 图片最大宽度不超过容器 */
+  max-height: 180px; /* 增加图片最大高度 */
+  width: auto; /* 自动宽度以保持比例 */
+  height: auto; /* 自动高度以保持比例 */
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  object-fit: contain; /* 确保整个图片可见，可能会有留白 */
+  display: inline-block; /* 确保 text-align:center 生效 */
+}
+
+/* 新增: 拖拽区域高亮样式 */
+#imageUploadArea.dragover-active {
+  background-color: var(--bg-tertiary);
+  border: 2px dashed var(--accent-color);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* 模态框中的图片预览的容器的 label 样式调整 */
+#imageUploadArea > label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+/* 变量输入模态框样式 - 修复版本 */
+.variables-modal,
+.prompt-variables-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  backdrop-filter: blur(var(--backdrop-blur));
+  -webkit-backdrop-filter: blur(var(--backdrop-blur));
+}
+
+.variables-content,
+.prompt-variables-content {
+  background-color: rgba(30, 30, 35, 0.85);
+  border-radius: 12px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px var(--shadow-color);
+  animation: fadeInScale 0.2s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.variables-content h3,
+.prompt-variables-content h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.variables-content form,
+.prompt-variables-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.variables-content label,
+.prompt-variables-content label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.variables-content input,
+.prompt-variables-content input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(50, 50, 55, 0.8);
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.variables-content input:focus,
+.prompt-variables-content input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(78, 133, 240, 0.3);
+}
+
+.variables-content button,
+.prompt-variables-content button {
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.variables-content button:hover,
+.prompt-variables-content button:hover {
+  transform: translateY(-1px);
+}
+
+/* 取消按钮 */
+.variables-content button:first-child,
+.prompt-variables-content button:first-child,
+.variables-content .cancel-btn,
+.prompt-variables-content .cancel-btn {
+  background-color: rgba(60, 60, 65, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* 确认按钮 */
+.variables-content button:last-child,
+.prompt-variables-content button:last-child,
+.variables-content .confirm-btn,
+.prompt-variables-content .confirm-btn {
+  background-color: var(--accent-color);
+  border: none;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 直接覆盖原生prompt样式 */
+.modal-dialog,
+.modal-content {
+  background-color: rgba(30, 30, 35, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 12px !important;
+  color: #ffffff !important;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea {
+  background-color: rgba(50, 50, 55, 0.8) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  border-radius: 6px !important;
+}
+
+/* 选择器组件样式优化 */
+select {
+  appearance: none;
+  background-color: var(--bg-secondary);
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  padding: 10px 36px 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px var(--shadow-color);
+}
+
+select:hover {
+  border-color: var(--accent-color);
+  box-shadow: 0 3px 6px var(--shadow-color);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(74, 133, 240, 0.25);
+}
+
+/* 选择器组和操作按钮容器 */
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.selector-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.selector-container select {
+  flex: 1;
+}
+
+/* 选择器标题样式 */
+.selector-title {
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.selector-title .icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+/* 选择器操作按钮组 */
+.template-actions,
+.api-actions {
+  display: flex;
+  gap: 6px;
+}
+
+/* 操作按钮样式优化 */
+.btn.action-btn {
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+}
+
+.btn.action-btn:hover {
+  background-color: var(--accent-color);
+  color: white;
+}
+
+/* 深色模式下的选择器样式调整 */
+@media (prefers-color-scheme: dark) {
+  select {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  
+  select:hover {
+    background-color: rgba(60, 60, 65, 0.9);
+  }
+}
+
+/* 优化结果输出区域样式 */
+.result-output {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 150px; /* 设置最小高度 */
+  max-height: 400px; /* 设置最大高度 */
+  overflow-y: auto; /* 超出高度时显示滚动条 */
+  white-space: pre-wrap; /* 保留换行和空格 */
+  word-wrap: break-word; /* 自动换行 */
+  font-family: 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* 深色模式下的调整 */
+@media (prefers-color-scheme: dark) {
+  .result-output {
+    box-shadow: inset 0 1px 3px rgba(255,255,255,0.05);
+  }
+}
+
+/* 优化页面 - 模板管理区域 */
+.template-management-area {
+  margin-top: 24px;
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.template-management-area h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.template-actions-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap; /* 允许按钮换行 */
+}
+
+#templateSearchInput {
+    margin-bottom: 16px;
+}
+
+.templates-list-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 响应式列布局 */
+  gap: 12px;
+  max-height: 300px; /* 限制最大高度，超出则滚动 */
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--bg-tertiary);
+}
+
+.template-card {
+  background-color: var(--bg-primary);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column; /* 使动作按钮在底部 */
+  justify-content: space-between; /* 将内容和动作按钮分开 */
+  min-height: 80px; /* 给卡片一个最小高度 */
+}
+
+.template-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px var(--shadow-color);
+  border-color: var(--accent-color);
+}
+
+.template-card.selected {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px var(--accent-color), 0 4px 8px var(--shadow-color);
+  background-color: var(--accent-hover-bg, rgba(78, 133, 240, 0.1)); /* 使用一个变量或者默认值 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .template-card.selected {
+    --accent-hover-bg: rgba(78, 133, 240, 0.2);
+  }
+}
+
+.template-card h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px; /* 与按钮的间距 */
+  word-break: break-word;
+}
+
+.template-card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto; /* 将按钮推到底部 */
+}
+
+.template-card-actions .btn.small {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+.template-card-actions .btn.danger {
+    background-color: var(--error-color, #f44336);
+    color: white;
+    border-color: var(--error-color, #f44336);
+}
+
+.template-card-actions .btn.danger:hover {
+    background-color: var(--error-hover-color, #d32f2f);
+    border-color: var(--error-hover-color, #d32f2f);
+}
+
+.no-templates-message {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-muted);
+  grid-column: 1 / -1; /* 让消息占据所有列 */
+}
+
+#selectedTemplatePreview {
+  font-family: 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical; /* 允许垂直调整大小 */
+  min-height: 80px;
+}
+
+/* 优化页面 - 原始提示词文本框与按钮的组合 */
+.textarea-with-button {
+  position: relative;
+  display: flex;
+  align-items: flex-start; /* 顶部对齐 */
+}
+
+.textarea-with-button textarea {
+  flex-grow: 1;
+  /* 移除右边可能存在的边框或圆角，让按钮看起来更贴合 */
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: none; /* 如果按钮紧贴，可以去掉textarea的右边框 */
+  resize: vertical;
+  min-height: 80px; /* 与预览框保持一致 */
+}
+
+.textarea-with-button #selectExistingPromptBtn {
+  height: auto; /* 自动高度，或与textarea第一行差不多高 */
+  padding: 8px 10px; /* 调整按钮内边距 */
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px; /* 覆盖textarea的边框，使其看起来像一体 */
+  align-self: stretch; /* 使按钮与textarea等高，如果textarea可变高 */
+   /* 如果希望按钮固定在右上角而不是随文本框拉伸，使用以下样式 */
+  /* 
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  height: auto; 
+  */
+}
+
+
+/* 优化页面 - 选择已有提示词模态框 */
+#selectExistingPromptModal .modal-content.large {
+  max-width: 700px; /* 更宽的模态框 */
+}
+
+#selectExistingPromptModal h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+#existingPromptSearchInput {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+#existingPromptSearchInput:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(74, 133, 240, 0.25);
+}
+
+.existing-prompts-list-container {
+  max-height: 400px; /* 模态框内列表的最大高度 */
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 8px;
+  background-color: var(--bg-primary); /* 稍微不同的背景以便区分 */
+}
+
+.existing-prompt-item-for-selection {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.existing-prompt-item-for-selection:last-child {
+  border-bottom: none;
+}
+
+.existing-prompt-item-for-selection:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.existing-prompt-item-for-selection h5 {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.existing-prompt-item-for-selection .content-preview {
+  font-size: 13px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 新增：提示词项内的复选框容器 */
+/*
+.prompt-item-checkbox-container {
+  margin-right: 8px; 
+  display: flex; 
+  align-items: center; 
+}
+
+.prompt-item-checkbox-container input[type="checkbox"] {
+  width: 18px; 
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--accent-color); 
+}
+*/
+
+/* 当复选框被选中时，给prompt-item添加一个选中样式 */
+.prompt-item.selected-for-batch, /* Keep this class for now, or rename to .prompt-item--selected */
+.prompt-item--selected { /* Added a new, clearer class name for selection */
+  background-color: var(--accent-hover-bg, rgba(78, 133, 240, 0.15)); /* Slightly darker blue for selected */
+  border-left: 3px solid var(--accent-color);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.form-group select {
+  appearance: none; /* 移除默认箭头 */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 36px; /* 为自定义箭头留出空间 */
+}
+
+/* 新增：拖动中的提示词项样式 */
+.prompt-item.dragging {
+  opacity: 0.5;
+  border: 2px dashed var(--accent-color);
+}
+
+/* 新增：文件夹作为拖放目标时的悬停样式 */
+.folder-item-wrapper.dragover-target,
+.folder-item.dragover-target /* 主要用于 "所有提示词" 项 */ {
+  background-color: var(--accent-hover-bg, rgba(78, 133, 240, 0.15)); /* 更明显的背景提示 */
+  box-shadow: 0 0 0 2px var(--accent-color), inset 0 0 10px var(--accent-hover-bg, rgba(78, 133, 240, 0.1)); /* 边框和内阴影提示 */
+  transform: scale(1.02); /* 轻微放大 */
+}
+
+/* 如果需要特别为移动按钮调整，可以在这里加 */
+.move-selected-btn {
+  /* font-size: 16px; */ /* 例如，如果图标不同，可能需要调整大小 */
+}
+
+.folder-item-wrapper:hover .folder-action-btn {
+  color: white; /* 悬停在wrapper上时，按钮图标变白 */
+  background-color: rgba(255, 255, 255, 0.2); /* 轻微背景使其可见 */
+}
+
+/* 新增：内联文件夹编辑样式 */
+.folder-edit-inline-container {
+  display: flex;
+  flex-grow: 1; /* 占据可用空间 */
+  align-items: center;
+  gap: 6px; /* 输入框和按钮组之间的间距 */
+  /* padding: 2px 0; */ /* 微调垂直对齐，如果需要 */
+}
+
+.folder-edit-inline-input {
+  flex-grow: 1; /* 输入框占据大部分空间 */
+  padding: 4px 8px;
+  border: 1px solid var(--accent-color); /* 编辑时高亮边框 */
+  border-radius: 4px;
+  font-size: 13px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  height: 28px; /* 与按钮大致等高 */
+}
+
+.folder-edit-inline-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.folder-edit-inline-save,
+.folder-edit-inline-cancel {
+  padding: 4px 8px; /* 按钮内边距调整 */
+  font-size: 12px; /* 按钮文字大小调整 */
+  height: 28px; /* 与输入框等高 */
+  line-height: 1.5; /* 确保文字垂直居中 */
+}
+
+/* 新增：内联创建文件夹样式 - 调整后 */
+.create-folder-inline-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* padding: 4px; */ /* Removed padding to align better with header buttons */
+  /* border: 1px solid var(--border-color); */ /* Removed border */
+  /* border-radius: 8px; */ /* Removed border-radius */
+  /* background-color: var(--bg-secondary); */ /* Removed background */
+  margin-left: 10px; /* Add some margin to separate from other header buttons */
+}
+
+.create-folder-inline-input {
+  flex-grow: 1; /* 输入框占据多余空间 */
+  padding: 8px 12px; /* Match header button padding */
+  border: 1px solid var(--border-color); /* Keep border for input */
+  border-radius: 8px; /* Match header button radius */
+  font-size: 14px; /* Match header button font-size */
+  background-color: var(--bg-secondary); /* Match header button background */
+  color: var(--text-primary);
+  height: 38px; /* Match header button height (approximated) */
+}
+
+.create-folder-inline-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(74, 133, 240, 0.25);
+}
+
+.create-folder-inline-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.create-folder-inline-save,
+.create-folder-inline-cancel {
+  padding: 8px 14px; /* Match header button padding */
+  font-size: 14px; /* Match header button font-size */
+  height: 38px; /* Match header button height */
+  /* line-height: 1.5; */ /* Not needed if height and padding are set */
+  border-radius: 8px; /* Match header button radius */
+  /* Inherit .btn styles for consistency, or re-apply relevant ones */
+}
+
+/* analytics.html specific styles */
+.analytics-main {
+  padding-top: 20px;
+}
+
+.chart-container {
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+  height: 400px; /* 给予图表容器一个固定的高度 */
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container h2 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.chart-container canvas {
+  flex-grow: 1; /* 让 canvas 填满剩余空间 */
+  max-width: 100%; /* 确保 canvas 不会超出其容器 */
+}
+
+/* 确保返回按钮在 analytics 页面也可见 */
+.analytics-main + .container header .header-actions #backToSidepanelBtn {
+    display: inline-block; /* 或者 flex, block 等，取决于你的布局 */
+}
+
+/* 加载更多按钮样式 */
+#loadMoreContainer {
+  padding: 15px;
+  text-align: center;
+  /* display: none; /* Initially hidden by JS */
+}
+
+#loadMoreBtn {
+  /* 使用现有的 .btn 样式，可以按需添加或覆盖特定样式 */
+  /* 例如： */
+  /* padding: 10px 20px; */
+  /* font-size: 14px; */
+}
+
+/* 提示词列表布局调整 */
+/* ... existing code ... */

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>提示词统计分析</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- 请确保您已将 chart.umd.js 下载并放置在与此文件相同的目录，或正确引用其路径 -->
+  <script src="chart.umd.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>提示词统计分析</h1>
+      <div class="header-actions">
+        <button id="backToSidepanelBtn" class="btn">返回</button>
+      </div>
+    </header>
+    <main class="analytics-main">
+      <section class="chart-container">
+        <h2>使用频率最高的提示词 (Top 10)</h2>
+        <canvas id="usageFrequencyChart"></canvas>
+      </section>
+      <section class="chart-container">
+        <h2>提示词使用时间分布</h2>
+        <canvas id="usageTimeDistributionChart"></canvas>
+      </section>
+      <!-- 更多图表可以后续添加 -->
+    </main>
+  </div>
+  <div id="loadMoreContainer" style="text-align: center; padding: 15px; display: none;">
+    <button id="loadMoreBtn" class="btn">加载更多</button>
+  </div>
+  <script src="analytics.js"></script>
+</body>
+</html> 

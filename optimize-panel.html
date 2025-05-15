@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>提示词优化</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>提示词优化</h1>
+      <div class="header-actions">
+        <button id="backBtn" class="btn">返回</button>
+      </div>
+    </header>
+    
+    <div class="optimize-container">
+      <div class="form-group">
+        <label for="originalPrompt">原始提示词</label>
+        <div class="textarea-with-button">
+          <textarea id="originalPrompt" placeholder="请输入您想要优化的提示词，或从已有列表选择..."></textarea>
+          <button id="selectExistingPromptBtn" class="btn small" title="从已有提示词选择">选择已有</button>
+        </div>
+      </div>
+      
+      <div class="button-container main-optimize-action">
+        <button id="optimizeBtn" class="btn primary large">优化提示词</button>
+      </div>
+      
+      <div class="result-container" style="display: none;">
+        <div class="form-group">
+          <label for="optimizedPrompt">优化结果</label>
+          <div id="optimizedResultOutput" class="result-output"></div>
+          <div id="loadingIndicator" style="display: none; text-align: center; padding: 20px; color: var(--text-muted);">正在努力优化中，请稍候...</div>
+        </div>
+        
+        <div class="result-actions-container">
+          <button id="copyBtn" class="btn icon-btn" title="复制结果"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> 复制</button>
+          <button id="saveBtn" class="btn primary icon-btn" title="保存为新提示词"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> 保存</button>
+          <button id="iterateBtn" class="btn icon-btn" title="继续优化"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> 迭代</button>
+        </div>
+      </div>
+
+      <div class="template-management-area">
+        <h2>优化模板管理</h2>
+        <div class="template-actions-bar">
+          <button id="addTemplateBtn" class="btn primary">添加新模板</button>
+          <button id="importTemplatesBtn" class="btn">导入模板</button>
+          <button id="exportTemplatesBtn" class="btn">导出模板</button>
+        </div>
+        <div class="form-group">
+            <label for="templateSearchInput">搜索模板</label>
+            <input type="text" id="templateSearchInput" placeholder="按名称或ID搜索模板...">
+        </div>
+        <div id="templatesListContainer" class="templates-list-container">
+          <!-- 模板列表将通过JavaScript动态生成 -->
+        </div>
+        <div class="form-group" style="margin-top: 10px;">
+          <label for="selectedTemplatePreview">当前选中模板预览 (只读)</label>
+          <textarea id="selectedTemplatePreview" rows="5" readonly placeholder="选择一个模板后在此预览其内容"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 模板编辑模态框 -->
+  <div id="templateModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="templateModalTitle">添加优化模板</h2>
+      
+      <form id="templateForm">
+        <div class="form-group">
+          <label for="templateId">模板ID (唯一标识，建议使用英文)</label>
+          <input type="text" id="templateId" placeholder="例如: general_optimization" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="templateName">模板名称</label>
+          <input type="text" id="templateName" placeholder="输入模板显示名称" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="templateContent">模板内容</label>
+          <textarea id="templateContent" rows="10" placeholder="输入模板内容，使用 {{originalPrompt}} 作为原始提示词的占位符" required></textarea>
+        </div>
+        
+        <div class="button-container">
+          <button type="button" id="cancelTemplateBtn" class="btn">取消</button>
+          <button type="submit" id="saveTemplateBtn" class="btn primary">保存模板</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <!-- API配置编辑模态框 -->
+  <div id="apiModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="apiModalTitle">添加API配置</h2>
+      
+      <form id="apiForm">
+        <div class="form-group">
+          <label for="apiId">配置ID</label>
+          <input type="text" id="apiId" placeholder="输入配置唯一标识符" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="apiName">配置名称</label>
+          <input type="text" id="apiName" placeholder="输入配置显示名称" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="apiUrl">API URL</label>
+          <input type="text" id="apiUrl" placeholder="输入API端点URL" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="apiModel">模型名称</label>
+          <input type="text" id="apiModel" placeholder="输入模型名称" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="apiKey">API Key</label>
+          <input type="password" id="apiKey" placeholder="输入API密钥" required>
+        </div>
+        
+        <div class="button-container">
+          <button type="button" id="cancelApiBtn" class="btn">取消</button>
+          <button type="submit" id="saveApiBtn" class="btn primary">保存配置</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+  <script src="optimize.js"></script>
+
+  <!-- 新增：选择已有提示词模态框 -->
+  <div id="selectExistingPromptModal" class="modal" style="display: none;">
+    <div class="modal-content large">
+      <span class="close" id="closeSelectExistingPromptModalBtn">&times;</span>
+      <h2>选择已有提示词作为原始提示词</h2>
+      
+      <div class="form-group">
+        <input type="text" id="existingPromptSearchInput" placeholder="搜索标题或内容...">
+      </div>
+      
+      <div id="existingPromptsListContainerForSelection" class="existing-prompts-list-container">
+        <!-- 提示词列表将通过JavaScript动态生成 -->
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
